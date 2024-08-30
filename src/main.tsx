@@ -1,8 +1,25 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import NotFoundStudy from "./components/NotFoundStudy.tsx";
 
-createRoot(document.getElementById('root')!).render(
+const router = createBrowserRouter([
+  {
+    path: "/viewer/:studyUID",
+    element: <App />,
+  },
+  {
+    path: "*",
+    element: <NotFoundStudy />,
+  },
+  {
+    path: "/notfound",
+    element: <NotFoundStudy />,
+  },
+]);
+
+createRoot(document.getElementById("root")!).render(
   <>
-    <App />
-  </>,
-)
+    <RouterProvider router={router} />
+  </>
+);

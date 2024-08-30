@@ -1,17 +1,27 @@
 import { dicomwebBaseURL } from "../config/default";
 
 export async function findData(studyInstanceUID: string): Promise<any> {
-  var founded: string[] = [];
+  var foundedSeries: any[] = [];
+  var area: string = "";
+
   try {
     const seriesList = await getSeries(studyInstanceUID);
     if (seriesList.length > 0) {
+      area = seriesList[0]["00080060"].Value[0];
+      if (area === "MR") {
+        window.location.href = "/notfound";
+      }
       for (const series of seriesList) {
         const seriesInstanceUID = series["0020000E"].Value[0]; // Series Instance UID
+
         const instancesList = await getInstances(
           studyInstanceUID,
           seriesInstanceUID
         );
-        console.log(instancesList);
+
+        // Crear un nuevo arreglo para cada serie
+        var inst: any[] = [];
+
         if (instancesList.length > 0) {
           instancesList.forEach((instance: any) => {
             const instanceUID = instance["00080018"].Value[0]; // Instance UID
@@ -20,14 +30,23 @@ export async function findData(studyInstanceUID: string): Promise<any> {
               seriesInstanceUID,
               instanceUID
             );
-            founded.push(imageURL);
+            inst.push(imageURL);
           });
         }
+
+        // Agregar las instancias de la serie al arreglo de series
+        foundedSeries.push(inst);
       }
-      return founded;
+      console.log(area);
+      var data = {
+        found: foundedSeries,
+        area: area,
+      };
+      return data;
     }
   } catch (error) {
     console.error("Error:", error);
+    window.location.href = "/notfound";
   }
 }
 
@@ -39,7 +58,7 @@ export async function getSeries(studyInstanceUID: string) {
     },
   });
   const seriesData = await response.json();
-  console.log(seriesData);
+  // console.log(seriesData);
   return seriesData;
 }
 
@@ -54,7 +73,7 @@ export async function getInstances(
     },
   });
   const instancesData = await response.json();
-  console.log(instancesData);
+  // console.log(instancesData);
   return instancesData;
 }
 
