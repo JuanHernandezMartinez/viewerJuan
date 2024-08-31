@@ -1,48 +1,46 @@
 import { dicomwebBaseURL } from "../config/default";
 
 export async function findData(studyInstanceUID: string): Promise<any> {
-  var foundedSeries: any[] = [];
-  var area: string = "";
+  const foundedSeries: any[] = [];
+  let area = "";
 
   try {
     const seriesList = await getSeries(studyInstanceUID);
     if (seriesList.length > 0) {
       area = seriesList[0]["00080060"].Value[0];
+
+      // Si el área es MR, redirigir a /notfound
       if (area === "MR") {
         window.location.href = "/notfound";
+        return;
       }
+
       for (const series of seriesList) {
         const seriesInstanceUID = series["0020000E"].Value[0]; // Series Instance UID
-
-        const instancesList = await getInstances(
-          studyInstanceUID,
-          seriesInstanceUID
-        );
-
-        // Crear un nuevo arreglo para cada serie
-        var inst: any[] = [];
+        const instancesList = await getInstances(studyInstanceUID, seriesInstanceUID);
 
         if (instancesList.length > 0) {
-          instancesList.forEach((instance: any) => {
+          const inst: any[] = instancesList.map((instance: any) => {
             const instanceUID = instance["00080018"].Value[0]; // Instance UID
-            const imageURL = buildWADOURL(
-              studyInstanceUID,
-              seriesInstanceUID,
-              instanceUID
-            );
-            inst.push(imageURL);
+            return buildWADOURL(studyInstanceUID, seriesInstanceUID, instanceUID);
           });
-        }
 
-        // Agregar las instancias de la serie al arreglo de series
-        foundedSeries.push(inst);
+          // Si el área es MG, separa las imágenes en diferentes instancias
+          if (area === "MG") {
+            inst.forEach(singleImageURL => {
+              foundedSeries.push([singleImageURL]); // Cada imagen como una instancia separada
+            });
+          } else {
+            foundedSeries.push(inst); // Todas las imágenes de la serie como un solo conjunto
+          }
+        }
       }
+
       console.log(area);
-      var data = {
+      return {
         found: foundedSeries,
         area: area,
       };
-      return data;
     }
   } catch (error) {
     console.error("Error:", error);

@@ -26,6 +26,7 @@ html,
 body {
   position: relative;
   height: 100%;
+  background: #1a1a1a;
 }
 
 body {
@@ -77,6 +78,11 @@ body {
   height: 80%;
 }
 
+.DX {
+  display: block;
+  width: 30%;
+}
+
 @media (max-width: 768px) {
   .button-img {
     width: 50px;
@@ -98,8 +104,13 @@ body {
 
   .MG {
     display: block;
-    width: 80%;
-    height: 80%;
+    width: 90%;
+    height: 70%;
+  }
+
+  .DX {
+    display: block;
+    width: 100%;
   }
 }
 
@@ -113,5 +124,15 @@ body {
     display: block;
     width: 100%;
     height: 80%;
+  }
+  .MG {
+    display: block;
+    width: 80%;
+    height: 70%;
+  }
+
+  .DX {
+    display: block;
+    width: 80%;
   }
 }

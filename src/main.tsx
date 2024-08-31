@@ -1,7 +1,10 @@
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import NotFoundStudy from "./components/NotFoundStudy.tsx";
+// import App from "./App.tsx";
+// import NotFoundStudy from "./components/NotFoundStudy.tsx";
+const App = lazy(() => import("./App.tsx"));
+const NotFoundStudy = lazy(() => import("./components/NotFoundStudy.tsx"));
 
 const router = createBrowserRouter([
   {
@@ -20,6 +23,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <>
-    <RouterProvider router={router} />
+    <Suspense fallback={<div>Cargando estudio...</div>}>
+      <RouterProvider router={router} />
+    </Suspense>
   </>
 );

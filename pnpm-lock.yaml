@@ -20,6 +20,9 @@ importers:
       react-router-dom:
         specifier: ^6.26.1
         version: 6.26.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      sweetalert2:
+        specifier: ^11.12.4
+        version: 11.12.4
       swiper:
         specifier: ^11.1.11
         version: 11.1.11
@@ -1008,6 +1011,9 @@ packages:
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
+
+  sweetalert2@11.12.4:
+    resolution: {integrity: sha512-ZSpyaLbAmn4b7xjnV9x9BFD1UOrCAhIzm1D8dZ443kGxtVKqbTIA5SgXs4xeEtmFfEXUyC3RBgpSlu1AXmCiHA==}
 
   swiper@11.1.11:
     resolution: {integrity: sha512-077Aw3OrlZpkkBRf/6+44bGh/HZY/vsLEyate2db2KkJgYUIR5TvDgvvhcJtW/puXzw79w5KBc30DauEX6GZYQ==}
@@ -2018,6 +2024,8 @@ snapshots:
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
+
+  sweetalert2@11.12.4: {}
 
   swiper@11.1.11: {}
 
