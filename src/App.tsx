@@ -13,17 +13,26 @@ import StudySlider from "./components/StudySlider";
 
 export default function App() {
   const params = useParams();
+  const studyInstanceUID: string = params.studyUID || "";
   const [urls, setUrls] = useState<any[]>([]);
   const [select, setSelect] = useState<string[]>([]);
   const [area, setArea] = useState<string>();
   const [metaData, setMetadata] = useState<MetaData>();
-  const studyInstanceUID: string = params.studyUID || "";
 
   const handleDataFromChild = (childData: any[]) => {
     setSelect(childData);
   };
 
   useEffect(() => {
+    async function init() {
+      const data: { found: any[]; area: string; metaData: MetaData } =
+        await findData(studyInstanceUID);
+      setUrls(data.found);
+      setArea(data.area);
+      setSelect(data.found[0]);
+      setMetadata(data.metaData);
+    }
+    
     Swal.fire({
       icon: "info",
       title: "!!Aviso importante¡¡",
@@ -41,18 +50,9 @@ export default function App() {
       }
       if (result.isConfirmed) {
         Swal.close();
+        init();
       }
     });
-
-    async function init() {
-      const data: { found: any[]; area: string; metaData: MetaData } =
-        await findData(studyInstanceUID);
-      setUrls(data.found);
-      setArea(data.area);
-      setSelect(data.found[0]);
-      setMetadata(data.metaData);
-    }
-    init();
   }, []);
 
   return (
