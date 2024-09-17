@@ -49,7 +49,7 @@ export async function findData(studyInstanceUID: string): Promise<any> {
         dicomwebBaseURL + "/studies/" + studyInstanceUID + "/metadata",
         area
       );
-      // console.log("metadata", metaData);
+      console.log("metadata", metaData);
       return {
         found: foundedSeries,
         area: area,
@@ -72,14 +72,38 @@ export async function getStudyMetaData(
     },
   });
 
+  const cto = getCtoArea(area);
+  console.log("Numero cto: ", cto);
+  if (!cto) {
+    return;
+  }
   var data = await response.json();
-  // console.log(data[0]["00100010"].Value[0]); nombre del paciente
+  console.log(data);
   var patientName = data[0]["00100010"].Value[0].Alphabetic; // nombre del paciente
-  var concept =
-    area === "MG" ? data[0]["00081030"].Value : data[0]["00400254"].Value; // concepto del estudio 00081030
+  console.log("Concepto: ", data[0][cto]?.Value);
+  var concept = data[0][cto]?.Value;
   var metaData: MetaData = new MetaData(patientName, concept);
-
   return metaData;
+}
+
+function getCtoArea(area: string): string | null {
+  //ultrasonido 00081030
+  //tomografia 00400254
+  //mastografia 00081030
+  enum ctoArea {
+    US = "00081030",
+    MG = "00081030",
+    CT = "00081030",
+    DX = "00180015",
+  }
+  // Comprobar si el área existe en el enum
+  if (area in ctoArea) {
+    console.log("se encontro el concepto");
+    return ctoArea[area as keyof typeof ctoArea];
+  } else {
+    console.log("No se encontro el concepto");
+    return null; // O cualquier valor que quieras devolver si no existe
+  }
 }
 
 export async function getSeries(studyInstanceUID: string) {

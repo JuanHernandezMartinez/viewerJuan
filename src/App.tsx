@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy } from "react";
+import { useEffect, useState } from "react";
 import { findData } from "./api/StudyData";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -8,8 +8,8 @@ import { Navigation } from "swiper/modules";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { MetaData } from "./models/Metadata";
-// import StudySlider from "./components/StudySlider";
-const StudySlider = lazy(() => import("./components/StudySlider"));
+import StudySlider from "./components/StudySlider";
+// const StudySlider = lazy(() => import("./components/StudySlider"));
 
 export default function App() {
   const params = useParams();
@@ -47,7 +47,6 @@ export default function App() {
     async function init() {
       const data: { found: any[]; area: string; metaData: MetaData } =
         await findData(studyInstanceUID);
-
       setUrls(data.found);
       setArea(data.area);
       setSelect(data.found[0]);
@@ -62,7 +61,7 @@ export default function App() {
         style={{
           position: "fixed",
           top: "2%",
-          left:"3%",
+          left: "3%",
           zIndex: 1000,
         }}
       >
