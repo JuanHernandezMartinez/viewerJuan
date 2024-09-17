@@ -23,7 +23,13 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <>
-    <Suspense fallback={<div>Cargando estudio...</div>}>
+    <Suspense
+      fallback={
+        <div style={{ background: "#1a1a1a", minHeight: "100vh" }}>
+          <h1 style={{ color: "white" }}>Cargando estudio...</h1>
+        </div>
+      }
+    >
       <RouterProvider router={router} />
     </Suspense>
   </>

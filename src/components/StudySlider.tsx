@@ -12,11 +12,12 @@ import { useState } from "react";
 export default function StudySlider(
   props: Studyslider = { data: [], onDataFromChild: Function }
 ) {
-  const [touched, setTouched] = useState<number>();
-  function sendDataToParent(data: any[]): any {
-    props.onDataFromChild(data);
-  }
   const urls = props.data;
+  const [touched, setTouched] = useState<number>(0);
+  function sendDataToParent(data: string[]): void {
+    props.onDataFromChild(data);
+    return;
+  }
 
   return (
     <>

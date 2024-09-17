@@ -7,7 +7,7 @@ import "./styles.css";
 import { Navigation } from "swiper/modules";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { MetaData } from "./models/Metadata";
 // import StudySlider from "./components/StudySlider";
 const StudySlider = lazy(() => import("./components/StudySlider"));
 
@@ -16,7 +16,7 @@ export default function App() {
   const [urls, setUrls] = useState<any[]>([]);
   const [select, setSelect] = useState<string[]>([]);
   const [area, setArea] = useState<string>();
-
+  const [metaData, setMetadata] = useState<MetaData>();
   const studyInstanceUID: string = params.studyUID || "";
 
   const handleDataFromChild = (childData: any[]) => {
@@ -45,19 +45,30 @@ export default function App() {
     });
 
     async function init() {
-      const data: { found: any[]; area: string } = await findData(
-        studyInstanceUID
-      );
+      const data: { found: any[]; area: string; metaData: MetaData } =
+        await findData(studyInstanceUID);
 
       setUrls(data.found);
       setArea(data.area);
       setSelect(data.found[0]);
+      setMetadata(data.metaData);
     }
     init();
   }, []);
 
   return (
     <>
+      <div
+        style={{
+          position: "fixed",
+          top: "2%",
+          left:"3%",
+          zIndex: 1000,
+        }}
+      >
+        <h1 className="metaData">{metaData?.patientName}</h1>
+        <h1 className="metaData">{metaData?.concept}</h1>
+      </div>
       <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
         {select.map((i, index) => (
           <SwiperSlide key={index}>
@@ -70,7 +81,6 @@ export default function App() {
           </SwiperSlide>
         ))}
       </Swiper>
-
       <StudySlider data={urls} onDataFromChild={handleDataFromChild} />
     </>
   );
