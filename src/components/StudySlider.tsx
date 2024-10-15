@@ -13,7 +13,11 @@ export default function StudySlider(
 ) {
   const urls = props.data;
   const [touched, setTouched] = useState<number>(0);
-  function sendDataToParent(data: string[]): void {
+  function sendDataToParent(data: string[], index:number): void {
+    if(touched===index){
+      console.log("touched")
+      return
+    }
     props.onDataFromChild(data);
     return;
   }
@@ -38,7 +42,7 @@ export default function StudySlider(
               src={i[0]}
               onClick={() => {
                 setTouched(index);
-                sendDataToParent(i);
+                sendDataToParent(i,index);
               }}
             />
           </SwiperSlide>

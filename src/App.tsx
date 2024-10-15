@@ -9,7 +9,6 @@ import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { MetaData } from "./models/Metadata";
 import StudySlider from "./components/StudySlider";
-// const StudySlider = lazy(() => import("./components/StudySlider"));
 
 export default function App() {
   const params = useParams();
@@ -18,9 +17,16 @@ export default function App() {
   const [select, setSelect] = useState<string[]>([]);
   const [area, setArea] = useState<string>();
   const [metaData, setMetadata] = useState<MetaData>();
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleDataFromChild = (childData: any[]) => {
+    setLoading(true);
+    console.log(loading)
     setSelect(childData);
+  };
+  const handleImageLoad = () => {
+    setLoading(false);
+    console.log(loading)
   };
 
   useEffect(() => {
@@ -32,11 +38,13 @@ export default function App() {
       setSelect(data.found[0]);
       setMetadata(data.metaData);
     }
-    
+
+    init();
+
     Swal.fire({
       icon: "info",
       title: "!!Aviso importante¡¡",
-      text: "Las imágenes mostradas en este sistema son exclusivamente para la verificación rápida de la adquisición y existencia de los estudios. Estas imágenes no están diseñadas ni calibradas para análisis clínicos, diagnóstico, ni interpretaciones médicas. Para cualquier evaluación clínica o diagnóstico, por favor utilice las imágenes originales en formato DICOM u otro medio certificado.",
+      text: "Las imágenes en este sistema son solo para verificación rápida de los estudios y no están calibradas para análisis clínicos ni diagnósticos.",
       showCancelButton: true,
       cancelButtonText: "Salir",
       confirmButtonText: "Continuar",
@@ -50,7 +58,6 @@ export default function App() {
       }
       if (result.isConfirmed) {
         Swal.close();
-        init();
       }
     });
   }, []);
@@ -71,11 +78,21 @@ export default function App() {
       <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
         {select.map((i, index) => (
           <SwiperSlide key={index}>
+            {loading ? (
+              <div className="loading-container">
+                <div className="spinner-container">
+                  <div className="spinner"></div>
+                </div>
+                <p style={{color:"whitesmoke"}}>Cargando imagen...</p>
+              </div>
+            ) : null}
             <img
               className={area}
               src={i}
-              alt="Imagen del estudio"
-              loading="lazy"
+              alt="No se pudo mostrar la imagen, recargué la pagina."
+              onLoad={handleImageLoad}
+              onError={() => setLoading(false)}
+              style={{ display: loading ? "none" : "block", color:"whitesmoke" }}
             />
           </SwiperSlide>
         ))}
